@@ -22,6 +22,24 @@ class Vehicle {
         this.acc.mult(0);
     }
 
+    applyForce(force) {
+        this.acc.add(force);
+    }
+
+    seek(target) {
+        // vector from vehicle pos to target
+        let desired = p5.Vector.sub(target, this.pos);
+
+        // scale to maxSpeed
+        desired.setMag(this.maxSpeed);
+
+        // steering = desired - velocity
+        let steer = p5.Vector.sub(desired, this.vel);
+        steer.limit(this.maxForce);
+        
+        this.applyForce(steer);
+    }
+
     show() {
         stroke(255);
         strokeWeight(4);
@@ -40,6 +58,10 @@ function setup() {
 
 function draw() {
     background(0);
+
+    let mouse = createVector(mouseX, mouseY);
+
+    vehicle.seek(mouse);
     vehicle.update();
     vehicle.show();
 }
