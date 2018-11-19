@@ -41,9 +41,23 @@ class Vehicle {
     }
 
     show() {
+        // Draw a triangle rotated in the direction of velocity
+        var theta = this.vel.heading() + PI / 2;
+        push();
+        translate(this.pos.x, this.pos.y);
+        rotate(theta);
+
+        // Draw the vehicle
+        strokeWeight(1);
+        fill(255);
         stroke(255);
-        strokeWeight(4);
-        point(this.pos.x, this.pos.y);
+        beginShape();
+        vertex(0, -this.r * 2);
+        vertex(-this.r, this.r * 2);
+        vertex(this.r, this.r * 2);
+        endShape(CLOSE);
+        pop();
+
     }
 
 }
