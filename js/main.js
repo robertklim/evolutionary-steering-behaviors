@@ -19,7 +19,7 @@ class Vehicle {
         this.acc = createVector(0, 0);
         this.r = 6;
         this.maxSpeed = 5;
-        this.maxForce = 0.3;
+        this.maxForce = 0.5;
 
         this.health = 1;
 
@@ -169,6 +169,29 @@ class Vehicle {
 
     }
 
+    boundaries() {
+        let d = 10;
+        let desired = null;
+        if (this.pos.x < d) {
+            desired = createVector(this.maxSpeed, this.vel.y);
+        } else if (this.pos.x > width - d) {
+            desired = createVector(-this.maxSpeed, this.vel.y);
+        }
+
+        if (this.pos.y < d) {
+            desired = createVector(this.vel.x, this.maxSpeed);
+        } else if (this.pos.y > height - d) {
+            desired = createVector(this.vel.x, -this.maxSpeed);
+        }
+
+        if (desired !== null) {
+            desired.setMag(this.maxSpeed);
+            var steer = p5.Vector.sub(desired, this.vel);
+            steer.limit(this.maxForce);
+            this.applyForce(steer);
+        }
+    }
+
 }
 
 function setup() {
@@ -224,6 +247,7 @@ function draw() {
         }
 
         // vehicle.seek(mouse);
+        vehicles[i].boundaries();
         vehicles[i].update();
         vehicles[i].show();
 
