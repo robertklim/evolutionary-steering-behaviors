@@ -28,21 +28,26 @@ class Vehicle {
         this.acc.add(force);
     }
 
-    eat(food) {
+    eat(resource) {
         let closestDistance = Infinity;
-        let closestFood = null;
-        let closestFoodIndex = -1;
-        for (let i = 0; i < food.length; i++) {
-            // let d = dist(this.pos.x, this.pos.y, food[i].x, food[i].y);
-            let d = this.pos.dist(food[i]);
+        let closestResource = null;
+        let closestResourceIndex = -1;
+        for (let i = 0; i < resource.length; i++) {
+            // let d = dist(this.pos.x, this.pos.y, resource[i].x, resource[i].y);
+            let d = this.pos.dist(resource[i]);
             if (d < closestDistance) {
                 closestDistance = d;
-                closestFood = food[i];
-                closestFoodIndex = i;
+                closestResource = resource[i];
+                closestResourceIndex = i;
             }
         }
 
-        this.seek(closestFood);
+        // if the vehicle is close enough from the resource EAT IT!!
+        if (closestDistance < 5) {
+            resource.splice(closestResourceIndex, 1);
+        }
+
+        this.seek(closestResource);
 
     }
 
@@ -113,12 +118,13 @@ function draw() {
     }
 
     // draw poison
-    for (let i = 0; i < food.length; i++) {
+    for (let i = 0; i < poison.length; i++) {
         fill(255, 0, 0);
         ellipse(poison[i].x, poison[i].y, 6, 6);
     }
 
     vehicle.eat(food);
+    vehicle.eat(poison);
     // vehicle.seek(mouse);
     vehicle.update();
     vehicle.show();
