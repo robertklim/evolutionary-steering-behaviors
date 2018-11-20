@@ -1,4 +1,6 @@
 let vehicle;
+let food = [];
+let poison = [];
 
 class Vehicle {
 
@@ -66,7 +68,18 @@ function setup() {
     createCanvas(600, 600);
     background(0);
 
+    // create vehicle
     vehicle = new Vehicle(width / 2, height / 2);
+
+    // create food
+    for (let i = 0; i < 10; i++) {
+        food.push(createVector(random(width), random(height)));
+    }
+
+    // create poison
+    for (let i = 0; i < 10; i++) {
+        poison.push(createVector(random(width), random(height)));
+    }
 
 }
 
@@ -74,6 +87,18 @@ function draw() {
     background(0);
 
     let mouse = createVector(mouseX, mouseY);
+
+    // draw food
+    for (let i = 0; i < food.length; i++) {
+        fill(0, 255, 0);
+        ellipse(food[i].x, food[i].y, 6, 6);
+    }
+
+    // draw poison
+    for (let i = 0; i < food.length; i++) {
+        fill(255, 0, 0);
+        ellipse(poison[i].x, poison[i].y, 6, 6);
+    }
 
     vehicle.seek(mouse);
     vehicle.update();
