@@ -1,6 +1,9 @@
 const vehiclesNum = 10;
 const foodNum = 10;
 const poisonNum = 10;
+const dyingSpeed = 0.005;
+const foodStrength = 0.5;
+const poisonStrength = -0.5;
 
 let vehicles = [];
 let food = [];
@@ -16,6 +19,8 @@ class Vehicle {
         this.maxSpeed = 5;
         this.maxForce = 0.3;
 
+        this.health = 1;
+
         // level of atraction to:
         this.genome = [];
         this.genome[0] = random(-5, 5); // food 
@@ -24,6 +29,8 @@ class Vehicle {
     }
 
     update() {
+        // decrease health every frame
+        this.health -= dyingSpeed;
         // update velocity
         this.vel.add(this.acc);
         // limit speed
@@ -39,8 +46,8 @@ class Vehicle {
     }
 
     behaviors(good, bad) {
-        let steerGood = this.eat(good);
-        let steerBad = this.eat(bad);
+        let steerGood = this.eat(good, foodStrength);
+        let steerBad = this.eat(bad, poisonStrength);
 
         steerGood.mult(this.genome[0]);
         steerBad.mult(this.genome[1]);
@@ -49,7 +56,7 @@ class Vehicle {
         this.applyForce(steerBad);
     }
 
-    eat(resource) {
+    eat(resource, nutrition) {
         let closestDistance = Infinity;
         let closestResource = null;
         let closestResourceIndex = -1;
@@ -66,6 +73,7 @@ class Vehicle {
         // if the vehicle is close enough from the resource EAT IT!!
         if (closestDistance < 5) {
             resource.splice(closestResourceIndex, 1);
+            this.health += nutrition;
         } else if (closestResourceIndex > -1) {
             return this.seek(resource[closestResourceIndex]);
         }
@@ -90,16 +98,20 @@ class Vehicle {
     }
 
     show() {
+        let green = color(0, 255, 0);
+        let red = color(255, 0 ,0);
+        let col = lerpColor(red, green, this.health); // <0 - red ... 1 - green>
+
         // Draw a triangle rotated in the direction of velocity
-        var theta = this.vel.heading() + PI / 2;
+        let theta = this.vel.heading() + PI / 2;
         push();
         translate(this.pos.x, this.pos.y);
         rotate(theta);
 
         // Draw the vehicle
         strokeWeight(1);
-        fill(255);
-        stroke(255);
+        fill(col);
+        stroke(col);
         beginShape();
         vertex(0, -this.r * 2);
         vertex(-this.r, this.r * 2);
@@ -135,7 +147,7 @@ function setup() {
 
     // create poison
     for (let i = 0; i < poisonNum; i++) {
-        poison.push(createVector(random(width), random(height)));
+       poison.push(createVector(random(width), random(height)));
     }
 
 }
