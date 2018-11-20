@@ -2,7 +2,7 @@ const vehiclesNum = 10;
 const foodNum = 10;
 const poisonNum = 10;
 const dyingSpeed = 0.005;
-const foodStrength = 0.5;
+const foodStrength = 0.2;
 const poisonStrength = -0.5;
 
 let vehicles = [];
@@ -158,6 +158,11 @@ function setup() {
 
 function draw() {
     background(0);
+
+    // randomly add food
+    if (random(1) < 0.05) {
+        food.push(createVector(random(width), random(height)));
+    }
 
     let center = createVector(width / 2, height / 2);
 
