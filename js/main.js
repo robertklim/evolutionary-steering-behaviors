@@ -11,6 +11,12 @@ class Vehicle {
         this.r = 6;
         this.maxSpeed = 5;
         this.maxForce = 0.3;
+
+        // level of atraction to:
+        this.genome = [3, -1];
+        // this.genome[0] = random(-5, 5); // food 
+        // this.genome[1] = random(-5, 5); // poison
+
     }
 
     update() {
@@ -26,6 +32,17 @@ class Vehicle {
 
     applyForce(force) {
         this.acc.add(force);
+    }
+
+    behaviors(good, bad) {
+        let steerGood = this.eat(good);
+        let steerBad = this.eat(bad);
+
+        steerGood.mult(this.genome[0]);
+        steerBad.mult(this.genome[1]);
+
+        this.applyForce(steerGood);
+        this.applyForce(steerBad);
     }
 
     eat(resource) {
@@ -46,8 +63,10 @@ class Vehicle {
         if (closestDistance < 5) {
             resource.splice(closestResourceIndex, 1);
         } else if (closestResourceIndex > -1) {
-            this.seek(resource[closestResourceIndex]);
+            return this.seek(resource[closestResourceIndex]);
         }
+
+        return createVector(0, 0);
 
     }
 
@@ -62,7 +81,8 @@ class Vehicle {
         let steer = p5.Vector.sub(desired, this.vel);
         steer.limit(this.maxForce);
         
-        this.applyForce(steer);
+        // this.applyForce(steer);
+        return steer;
     }
 
     show() {
@@ -81,6 +101,14 @@ class Vehicle {
         vertex(-this.r, this.r * 2);
         vertex(this.r, this.r * 2);
         endShape(CLOSE);
+
+        // show arrtaction for foor
+        stroke(0, 255, 0);
+        line(0, 0, 0, -this.genome[0] * 20);
+        // show arrtaction for poison
+        stroke(255, 0, 0);
+        line(0, 0, 0, -this.genome[1] * 20);
+
         pop();
 
     }
@@ -124,8 +152,9 @@ function draw() {
     }
 
     if (food.length > 0 || poison.length > 0) {
-        vehicle.eat(food);
-        vehicle.eat(poison);
+        vehicle.behaviors(food, poison);
+        // vehicle.eat(food);
+        // vehicle.eat(poison);
     } else {
         vehicle.seek(center);
     }
