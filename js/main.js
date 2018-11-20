@@ -28,6 +28,24 @@ class Vehicle {
         this.acc.add(force);
     }
 
+    eat(food) {
+        let closestDistance = Infinity;
+        let closestFood = null;
+        let closestFoodIndex = -1;
+        for (let i = 0; i < food.length; i++) {
+            // let d = dist(this.pos.x, this.pos.y, food[i].x, food[i].y);
+            let d = this.pos.dist(food[i]);
+            if (d < closestDistance) {
+                closestDistance = d;
+                closestFood = food[i];
+                closestFoodIndex = i;
+            }
+        }
+
+        this.seek(closestFood);
+
+    }
+
     seek(target) {
         // vector from vehicle pos to target
         let desired = p5.Vector.sub(target, this.pos);
@@ -86,7 +104,7 @@ function setup() {
 function draw() {
     background(0);
 
-    let mouse = createVector(mouseX, mouseY);
+    // let mouse = createVector(mouseX, mouseY);
 
     // draw food
     for (let i = 0; i < food.length; i++) {
@@ -100,7 +118,8 @@ function draw() {
         ellipse(poison[i].x, poison[i].y, 6, 6);
     }
 
-    vehicle.seek(mouse);
+    vehicle.eat(food);
+    // vehicle.seek(mouse);
     vehicle.update();
     vehicle.show();
 }
