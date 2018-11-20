@@ -4,6 +4,7 @@ const poisonNum = 10;
 const dyingSpeed = 0.005;
 const foodStrength = 0.2;
 const poisonStrength = -0.5;
+const cloneRate = 0.001;
 
 let vehicles = [];
 let food = [];
@@ -11,7 +12,7 @@ let poison = [];
 
 class Vehicle {
 
-    constructor(x, y) {
+    constructor(x, y, gen) {
         this.pos = createVector(x, y);
         this.vel = p5.Vector.random2D();
         this.acc = createVector(0, 0);
@@ -22,12 +23,16 @@ class Vehicle {
         this.health = 1;
 
         this.genome = [];
-        // level of atraction to:
-        this.genome[0] = random(-5, 5); // food 
-        this.genome[1] = random(-5, 5); // poison
-        // Level of perception of:
-        this.genome[2] = random(10, 200); // food 
-        this.genome[3] = random(10, 200); // poison
+        if (gen) {
+            this.genome = gen;
+        } else {
+            // level of atraction to:
+            this.genome[0] = random(-5, 5); // food 
+            this.genome[1] = random(-5, 5); // poison
+            // Level of perception of:
+            this.genome[2] = random(10, 200); // food 
+            this.genome[3] = random(10, 200); // poison
+        }
 
     }
 
@@ -59,6 +64,14 @@ class Vehicle {
         this.applyForce(steerBad);
     }
 
+    cloneSelf() {
+        if (random(1) < cloneRate) {
+            return new Vehicle(this.pos.x, this.pos.y, this.genome);
+        } else {
+            return null;
+        }
+    }
+
     eat(resource, nutrition, perception) {
         let closestDistance = Infinity;
         let closestResource = null;
@@ -74,7 +87,7 @@ class Vehicle {
         }
 
         // if the vehicle is close enough from the resource EAT IT!!
-        if (closestDistance < 5) {
+        if (closestDistance < this.maxSpeed) {
             resource.splice(closestResourceIndex, 1);
             this.health += nutrition;
         } else if (closestResourceIndex > -1) {
@@ -197,8 +210,15 @@ function draw() {
         vehicles[i].update();
         vehicles[i].show();
 
+        // create new vehicle
+        let newVehicle = vehicles[i].cloneSelf();
+        if (newVehicle !== null) {
+            vehicles.push(newVehicle);
+        }
+
         if (vehicles[i].isDead()) {
             vehicles.splice(i, 1);
         }
+
     }
 }
