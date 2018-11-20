@@ -1,10 +1,11 @@
-const vehiclesNum = 10;
-const foodNum = 10;
-const poisonNum = 10;
+const vehiclesNum = 50;
+const foodNum = 100;
+const poisonNum = 20;
 const dyingSpeed = 0.005;
 const foodStrength = 0.2;
 const poisonStrength = -0.5;
 const cloneRate = 0.001;
+const mutationRate = 0.01;
 
 let vehicles = [];
 let food = [];
@@ -24,7 +25,23 @@ class Vehicle {
 
         this.genome = [];
         if (gen) {
-            this.genome = gen;
+            // mutation
+            this.genome[0] = gen[0];
+            if (random(1) < mutationRate) {
+                this.genome[0] += random(-0.1, 0.1);
+            }
+            this.genome[1] = gen[1];
+            if (random(1) < mutationRate) {
+                this.genome[1] += random(-0.1, 0.1);
+            }
+            this.genome[2] = gen[2];
+            if (random(1) < mutationRate) {
+                this.genome[2] += random(-10, 10);
+            }
+            this.genome[3] = gen[3];
+            if (random(1) < mutationRate) {
+                this.genome[3] += random(-10, 10);
+            }
         } else {
             // level of atraction to:
             this.genome[0] = random(-5, 5); // food 
