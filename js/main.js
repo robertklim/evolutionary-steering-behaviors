@@ -45,9 +45,9 @@ class Vehicle {
         // if the vehicle is close enough from the resource EAT IT!!
         if (closestDistance < 5) {
             resource.splice(closestResourceIndex, 1);
+        } else {
+            this.seek(resource[closestResourceIndex]);
         }
-
-        this.seek(closestResource);
 
     }
 
@@ -109,7 +109,7 @@ function setup() {
 function draw() {
     background(0);
 
-    // let mouse = createVector(mouseX, mouseY);
+    let center = createVector(width / 2, height / 2);
 
     // draw food
     for (let i = 0; i < food.length; i++) {
@@ -123,8 +123,16 @@ function draw() {
         ellipse(poison[i].x, poison[i].y, 6, 6);
     }
 
-    vehicle.eat(food);
-    vehicle.eat(poison);
+    if (food.length > 0) {
+        vehicle.eat(food);
+    } else {
+        vehicle.seek(center);
+    }
+    if (poison.length > 0) {
+        vehicle.eat(poison);
+    } else {
+        vehicle.seek(center);
+    }
     // vehicle.seek(mouse);
     vehicle.update();
     vehicle.show();
