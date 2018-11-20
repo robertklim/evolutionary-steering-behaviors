@@ -1,4 +1,8 @@
-let vehicle;
+const vehiclesNum = 10;
+const foodNum = 10;
+const poisonNum = 10;
+
+let vehicles = [];
 let food = [];
 let poison = [];
 
@@ -13,9 +17,9 @@ class Vehicle {
         this.maxForce = 0.3;
 
         // level of atraction to:
-        this.genome = [3, -1];
-        // this.genome[0] = random(-5, 5); // food 
-        // this.genome[1] = random(-5, 5); // poison
+        this.genome = [];
+        this.genome[0] = random(-5, 5); // food 
+        this.genome[1] = random(-5, 5); // poison
 
     }
 
@@ -119,16 +123,18 @@ function setup() {
     createCanvas(600, 600);
     background(0);
 
-    // create vehicle
-    vehicle = new Vehicle(width / 2, height / 2);
+    // create vehicles
+    for (let i = 0; i < vehiclesNum; i++) {
+        vehicles[i] = new Vehicle(random(width), random(height));
+    }
 
     // create food
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < foodNum; i++) {
         food.push(createVector(random(width), random(height)));
     }
 
     // create poison
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < poisonNum; i++) {
         poison.push(createVector(random(width), random(height)));
     }
 
@@ -151,15 +157,17 @@ function draw() {
         ellipse(poison[i].x, poison[i].y, 6, 6);
     }
 
-    if (food.length > 0 || poison.length > 0) {
-        vehicle.behaviors(food, poison);
-        // vehicle.eat(food);
-        // vehicle.eat(poison);
-    } else {
-        vehicle.seek(center);
-    }
+    for (let i = 0; i < vehicles.length; i++) {
+        if (food.length > 0 || poison.length > 0) {
+            vehicles[i].behaviors(food, poison);
+            // vehicle.eat(food);
+            // vehicle.eat(poison);
+        } else {
+            vehicles[i].seek(center);
+        }
 
-    // vehicle.seek(mouse);
-    vehicle.update();
-    vehicle.show();
+        // vehicle.seek(mouse);
+        vehicles[i].update();
+        vehicles[i].show();
+    }
 }
