@@ -97,6 +97,10 @@ class Vehicle {
         return steer;
     }
 
+    isDead() {
+        return (this.health < 0);
+    }
+
     show() {
         let green = color(0, 255, 0);
         let red = color(255, 0 ,0);
@@ -169,7 +173,7 @@ function draw() {
         ellipse(poison[i].x, poison[i].y, 6, 6);
     }
 
-    for (let i = 0; i < vehicles.length; i++) {
+    for (let i = vehicles.length - 1; i >= 0; i--) {
         if (food.length > 0 || poison.length > 0) {
             vehicles[i].behaviors(food, poison);
             // vehicle.eat(food);
@@ -181,5 +185,9 @@ function draw() {
         // vehicle.seek(mouse);
         vehicles[i].update();
         vehicles[i].show();
+
+        if (vehicles[i].isDead()) {
+            vehicles.splice(i, 1);
+        }
     }
 }
