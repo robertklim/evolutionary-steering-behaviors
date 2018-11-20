@@ -26,8 +26,8 @@ class Vehicle {
         this.genome[0] = random(-5, 5); // food 
         this.genome[1] = random(-5, 5); // poison
         // Level of perception of:
-        this.genome[2] = random(10, 100); // food 
-        this.genome[3] = random(10, 100); // poison
+        this.genome[2] = random(10, 200); // food 
+        this.genome[3] = random(10, 200); // poison
 
     }
 
@@ -49,8 +49,8 @@ class Vehicle {
     }
 
     behaviors(good, bad) {
-        let steerGood = this.eat(good, foodStrength);
-        let steerBad = this.eat(bad, poisonStrength);
+        let steerGood = this.eat(good, foodStrength, this.genome[2]);
+        let steerBad = this.eat(bad, poisonStrength, this.genome[3]);
 
         steerGood.mult(this.genome[0]);
         steerBad.mult(this.genome[1]);
@@ -59,14 +59,14 @@ class Vehicle {
         this.applyForce(steerBad);
     }
 
-    eat(resource, nutrition) {
+    eat(resource, nutrition, perception) {
         let closestDistance = Infinity;
         let closestResource = null;
         let closestResourceIndex = -1;
         for (let i = 0; i < resource.length; i++) {
             // let d = dist(this.pos.x, this.pos.y, resource[i].x, resource[i].y);
             let d = this.pos.dist(resource[i]);
-            if (d < closestDistance) {
+            if (d < closestDistance && d < perception) {
                 closestDistance = d;
                 closestResource = resource[i];
                 closestResourceIndex = i;
