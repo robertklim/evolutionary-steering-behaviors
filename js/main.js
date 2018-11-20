@@ -21,10 +21,13 @@ class Vehicle {
 
         this.health = 1;
 
-        // level of atraction to:
         this.genome = [];
+        // level of atraction to:
         this.genome[0] = random(-5, 5); // food 
         this.genome[1] = random(-5, 5); // poison
+        // Level of perception of:
+        this.genome[2] = random(10, 100); // food 
+        this.genome[3] = random(10, 100); // poison
 
     }
 
@@ -122,12 +125,15 @@ class Vehicle {
         vertex(this.r, this.r * 2);
         endShape(CLOSE);
 
-        // show arrtaction for foor
+        // show food atraction and perception
         stroke(0, 255, 0);
+        noFill();
         line(0, 0, 0, -this.genome[0] * 20);
-        // show arrtaction for poison
+        ellipse(0, 0, this.genome[2] * 2);
+        // show poison attraction and perception
         stroke(255, 0, 0);
         line(0, 0, 0, -this.genome[1] * 20);
+        ellipse(0, 0, this.genome[3] * 2);
 
         pop();
 
@@ -161,7 +167,7 @@ function draw() {
 
     // randomly add food
     if (random(1) < 0.05) {
-        food.push(createVector(random(width), random(height)));
+       food.push(createVector(random(width), random(height)));
     }
 
     let center = createVector(width / 2, height / 2);
